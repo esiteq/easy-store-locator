@@ -25,8 +25,31 @@ class EasyStoreLocator
         add_action('admin_enqueue_scripts', [$this, 'admin_enqueue_scripts'], 100);
         add_action('wp_enqueue_scripts', [$this, 'wp_enqueue_scripts']);
         add_action('manage_store_posts_custom_column' , [$this, 'store_posts_custom_column'], 10, 2);
+        add_action('admin_notices', [$this, 'admin_notices'], 10);
         add_filter('manage_store_posts_columns', [$this, 'store_posts_columns'], 10);
         add_shortcode('easy_store_locator' , [$this, 'easy_store_locator']);
+    }
+    //
+    function required_plugins_active()
+    {
+        if (is_plugin_active('advanced-custom-fields/acf.php') && is_plugin_active('advanced-custom-fields-google-map-extended/acf-google-map-extended.php'))
+        {
+            return true;
+        }
+        return false;
+    }
+    //
+    function admin_notices()
+    {
+        if ($this->required_plugins_active())
+        {
+            return;
+        }
+?>
+    <div class="error notice">
+        <p><?php _e('Plugins <a href="https://wordpress.org/plugins/advanced-custom-fields/" target="_blank">Advanced Custom Fields</a> and <a href="https://wordpress.org/plugins/advanced-custom-fields-google-map-extended/" target="_blank">ACF: Google Map Extended</a> must be installed and activated before you can use Easy Store Locator', 'cnext'); ?></p>
+    </div>
+<?php
     }
     //
     function wp_enqueue_scripts()
